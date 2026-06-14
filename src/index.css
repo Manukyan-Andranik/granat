@@ -1,0 +1,403 @@
+@import "tailwindcss";
+
+@theme {
+  --color-granat-white: #FFFFFF;
+  --color-granat-dark: #0a0a0a;
+  --color-granat-red: #D72638;
+  --color-granat-dark-red: #580016;
+  --color-granat-cyber-red: #FF0D3E;
+  --color-granat-glass: rgba(255, 255, 255, 0.04);
+  --color-granat-glass-border: rgba(255, 255, 255, 0.08);
+  --color-granat-glass-highlight: rgba(255, 255, 255, 0.12);
+  --color-granat-muted: #86868B;
+
+  --font-sans: "Inter", "system-ui", "sans-serif";
+  --font-heading: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+}
+
+/* ─── Base ─────────────────────────────────────────────────── */
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  background-color: #000000;
+  color: #F5F5F7;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Premium Scrollbar ────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D72638, #580016);
+  border-radius: 10px;
+}
+
+/* ─── Selection ────────────────────────────────────────────── */
+::selection {
+  background: rgba(215, 38, 56, 0.3);
+  color: #fff;
+}
+
+/* ─── Custom Utilities ─────────────────────────────────────── */
+.glass-card {
+  background: rgba(20, 20, 22, 0.45);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+.glass-input {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #F5F5F7;
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: #D72638;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 3px rgba(215, 38, 56, 0.2);
+}
+
+.glass-input::placeholder {
+  color: #86868B;
+}
+
+/* ─── Gradient Text ────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #D72638 0%, #FF0D3E 50%, #D72638 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glow Effects ─────────────────────────────────────────── */
+.glow-red {
+  box-shadow: 0 0 40px rgba(215, 38, 56, 0.15), 0 0 80px rgba(215, 38, 56, 0.05);
+}
+
+.glow-red-strong {
+  box-shadow: 0 0 60px rgba(215, 38, 56, 0.3), 0 0 120px rgba(215, 38, 56, 0.1);
+}
+
+/* ─── Timeline ─────────────────────────────────────────────── */
+.timeline-line {
+  background-image: linear-gradient(to bottom, rgba(215,38,56,0.3) 50%, transparent 0%);
+  background-position: left;
+  background-size: 2px 12px;
+  background-repeat: repeat-y;
+}
+
+/* ─── Story Ring Animation ─────────────────────────────────── */
+@keyframes ring-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.story-ring-animated:hover .ring-gradient {
+  animation: ring-rotate 3s linear infinite;
+}
+
+/* ─── Video Scroll Layout ──────────────────────────────────── */
+.scroll-section, .horizontal-track {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  padding: 0 5vw;
+  box-sizing: border-box;
+  scroll-snap-align: start; 
+  scroll-snap-stop: always;
+}
+
+.pos-left { justify-content: flex-start; }
+.pos-right { justify-content: flex-end; }
+.pos-center { justify-content: space-between; margin-left: 10vw; }
+
+.content-card {
+  width: 45%;
+  min-width: 380px;
+  background: rgba(20, 20, 22, 0.45);
+  backdrop-filter: blur(35px) saturate(150%);
+  -webkit-backdrop-filter: blur(35px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 255, 255, 0.12);
+  padding: 3rem;
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(215, 38, 56, 0.05);
+  max-height: 80vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.content-card::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .content-card { 
+    width: 95%; 
+    min-width: 0;
+    padding: 2rem; 
+  }
+  .pos-center {
+    margin-left: 0;
+    justify-content: center;
+  }
+}
+
+.it-page-container {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ─── Services Circular Cover Flow Slider ─────────────────── */
+.service-video-card {
+  will-change: transform, filter, opacity;
+}
+
+/* ─── Light Mode Theme Overrides ───────────────────────────── */
+html, body, .glass-card, .content-card, header, a, button, input, textarea {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+html.light {
+  background-color: #F5F5F7;
+  color: #1D1D1F;
+}
+
+html.light body {
+  background-color: #F5F5F7;
+  color: #1D1D1F;
+}
+
+/* Light scrollbar */
+html.light ::-webkit-scrollbar-track {
+  background: #F5F5F7;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D72638, #FF5A50);
+}
+
+/* Light glass card */
+html.light .glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.4);
+  border-left-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(215, 38, 56, 0.02);
+}
+
+html.light .content-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(35px) saturate(180%);
+  -webkit-backdrop-filter: blur(35px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.4);
+  border-left-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(215, 38, 56, 0.02);
+}
+
+html.light .glass-input {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #1D1D1F;
+}
+
+html.light .glass-input:focus {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(215, 38, 56, 0.15);
+}
+
+/* Force light colors on components designed with dark-mode specific utility classes */
+html.light .text-white {
+  color: #1D1D1F !important;
+}
+
+html.light .text-white\/50 {
+  color: #515154 !important;
+}
+
+html.light .text-white\/55 {
+  color: #515154 !important;
+}
+
+html.light .text-white\/60 {
+  color: #515154 !important;
+}
+
+html.light .text-white\/40 {
+  color: #6E6E73 !important;
+}
+
+html.light .text-white\/30 {
+  color: #86868B !important;
+}
+
+html.light .text-white\/20 {
+  color: #AEAEB2 !important;
+}
+
+html.light .text-white\/80 {
+  color: #2C2C2E !important;
+}
+
+html.light .text-white\/70 {
+  color: #2C2C2E !important;
+}
+
+html.light .border-white\/5,
+html.light .border-white\/8,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+html.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+html.light .bg-white\/\[0\.02\] {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+html.light .bg-white\/\[0\.03\] {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .bg-black\/30 {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+html.light .bg-black\/40 {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+html.light .bg-black\/50 {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+html.light .bg-black\/80 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+html.light .bg-zinc-950\/20 {
+  background-color: rgba(245, 245, 247, 0.5) !important;
+}
+
+html.light .bg-zinc-950\/70 {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+html.light .bg-zinc-950\/40 {
+  background-color: rgba(245, 245, 247, 0.8) !important;
+}
+
+html.light .bg-zinc-950\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html.light input,
+html.light textarea {
+  background: rgba(255, 255, 255, 0.65) !important;
+  color: #1D1D1F !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light input:focus,
+html.light textarea:focus {
+  background: #FFFFFF !important;
+  border-color: #D72638 !important;
+  box-shadow: 0 0 0 3px rgba(215, 38, 56, 0.15) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #86868B !important;
+}
+
+/* Fix navbar branding */
+html.light header span {
+  color: #1D1D1F !important;
+}
+
+html.light header a {
+  color: #1D1D1F !important;
+}
+
+/* Terminal block simulation in light mode */
+html.light .font-mono .text-white\/50 {
+  color: #1D1D1F !important;
+}
+html.light .bg-zinc-950\/40 span {
+  color: #86868B !important;
+}
+
+/* Apply light mode video inverts (invert 0.95 to look dark gray on white canvas, keep hue rotation 180 to restore reds) */
+html.light video.light-invert {
+  filter: invert(0.95) hue-rotate(180deg) brightness(1.1) contrast(1.1) !important;
+  opacity: 0.75 !important;
+}
+
+html.light .it-page-wrapper,
+html.light .it-page-video-bg {
+  background-color: #F5F5F7 !important;
+  color: #1D1D1F !important;
+}
+
+html.light .text-white-keep,
+html.light button.bg-granat-red,
+html.light a.bg-granat-red {
+  color: #FFFFFF !important;
+}
+
+html.light .mobile-menu-overlay {
+  background-color: rgba(245, 245, 247, 0.98) !important;
+}
+
+html.light .footer-logo {
+  filter: brightness(0) !important;
+}
+
+.animate-theme-img {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.animate-theme-img:hover {
+  transform: scale(1.03) rotate(-1.5deg);
+}
+
+
+
