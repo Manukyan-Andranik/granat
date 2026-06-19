@@ -40,6 +40,19 @@ export default function ServiceCards() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [radius, setRadius] = useState(300);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLight, setIsLight] = useState(() => {
+    return typeof window !== 'undefined' ? document.documentElement.classList.contains('light') : false;
+  });
+
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setIsLight(document.documentElement.classList.contains('light'));
+    };
+    handleThemeChange();
+    
+    window.addEventListener('themechange', handleThemeChange);
+    return () => window.removeEventListener('themechange', handleThemeChange);
+  }, []);
   
   const rotationDeg  = useMotionValue(0);
   const springRot    = useSpring(rotationDeg, { stiffness: 40, damping: 18, mass: 1.2 });
@@ -190,7 +203,7 @@ export default function ServiceCards() {
                   }}
                   className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-granat-red rounded-2xl"
                 >
-                  <ServiceCard service={service} isActive={i === activeIndex} isMobile={isMobile} />
+                  <ServiceCard service={service} isActive={i === activeIndex} isMobile={isMobile} isLight={isLight} />
                 </motion.div>
               );
             });
@@ -201,7 +214,7 @@ export default function ServiceCards() {
   );
 }
 
-function ServiceCard({ service, isActive, isMobile }) {
+function ServiceCard({ service, isActive, isMobile, isLight }) {
   const cardScale = isMobile
     ? (isActive ? 1.05 : 0.65)
     : (isActive ? 1.5 : 0.78);
@@ -209,7 +222,10 @@ function ServiceCard({ service, isActive, isMobile }) {
   const cardPadding = isMobile ? 'p-3' : 'p-5';
   const cardBg = isActive 
     ? 'rgba(215,38,56,0.09)' 
-    : (isMobile ? 'rgba(18,18,20,0.92)' : 'rgba(18,18,20,0.75)');
+    : (isLight 
+        ? 'rgba(255, 255, 255, 0.65)' 
+        : (isMobile ? 'rgba(18,18,20,0.92)' : 'rgba(18,18,20,0.75)')
+      );
 
   return (
     <motion.div
@@ -222,7 +238,9 @@ function ServiceCard({ service, isActive, isMobile }) {
       style={{
         width:       cardWidth,
         background:  cardBg,
-        borderColor: isActive ? 'rgba(215,38,56,0.4)'  : 'rgba(255,255,255,0.07)',
+        borderColor: isActive 
+          ? 'rgba(215,38,56,0.4)'  
+          : (isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255,255,255,0.07)'),
         boxShadow:   isActive ? '0 0 40px rgba(215,38,56,0.18)' : 'none',
       }}
     >
@@ -244,7 +262,7 @@ function ServiceCard({ service, isActive, isMobile }) {
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className={`mt-2 text-[10px] text-white/45 leading-relaxed font-light ${isMobile ? 'line-clamp-3' : ''}`}
+          className={`mt-2 text-[10px] text-white/40 leading-relaxed font-light ${isMobile ? 'line-clamp-3' : ''}`}
         >
           {service.desc}
         </motion.p>

@@ -11,8 +11,6 @@ const SERVICES = [
     tagline: 'Data-driven scale & ROI',
     desc: 'Data-driven marketing strategies that increase search visibility, acquire high-value customers, and maximize advertising returns.',
     accent: '#8B5CF6',
-    videoStart: 0,
-    videoEnd: 7,
     features: [
       'Search Engine Optimization (SEO)',
       'Pay-Per-Click Advertising (PPC)',
@@ -27,8 +25,6 @@ const SERVICES = [
     tagline: 'Viral growth & brand trust',
     desc: 'Creative and community-focused campaigns across primary platforms to generate active user engagement, brand awareness, and customer trust.',
     accent: '#EC4899',
-    videoStart: 5.62,
-    videoEnd: 9,
     features: [
       'Content Planning & Strategy',
       'Targeted Social Advertising',
@@ -43,8 +39,6 @@ const SERVICES = [
     tagline: 'Cinematic Video Scroll',
     desc: 'Custom web development, programmatic AI media generation, and robust technical infrastructure. Click to view our cinematic video-scroll overview page.',
     accent: '#3B82F6',
-    videoStart: 3,
-    videoEnd: 9,
     isIT: true,
     features: [
       'High-Performance Web Applications',
@@ -60,8 +54,6 @@ const SERVICES = [
     tagline: 'High-impact outdoor media',
     desc: 'Modern LED billboard display planning and dynamic digital out-of-home campaigns triggered in real-time based on local conditions.',
     accent: '#10B981',
-    videoStart: 2,
-    videoEnd: 9.8,
     features: [
       'Real-time content updates',
       'Campaign performance tracking',
@@ -76,8 +68,6 @@ const SERVICES = [
     tagline: 'Visual identity & voice',
     desc: 'Establish a memorable brand presence with complete logo assets, premium visual guidelines, and consistent cross-platform messaging.',
     accent: '#F59E0B',
-    videoStart: 1,
-    videoEnd: 7,
     features: [
       'Logo & Graphic Asset Creation',
       'Brand Book & Usage Guidelines',
@@ -114,7 +104,19 @@ const wrap = (min, max, v) => {
   return ((((v - min) % range) + range) % range) + min;
 };
 
-function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFactor, isDragging, isActive }) {
+const getReadableAccent = (accent, isLight) => {
+  if (!isLight) return accent;
+  const lightColors = {
+    '#8B5CF6': '#6D28D9', // Darker Purple
+    '#EC4899': '#BE185D', // Darker Pink
+    '#3B82F6': '#1D4ED8', // Darker Blue
+    '#10B981': '#047857', // Darker Green
+    '#F59E0B': '#B45309', // Darker Amber / Brown
+  };
+  return lightColors[accent] || accent;
+};
+
+function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFactor, isDragging, isActive, isLight }) {
   const videoRef = useRef(null);
   const [isCardHovered, setIsCardHovered] = useState(false);
 
@@ -126,8 +128,8 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
 
     const playVideo = () => {
       if (!isMounted) return;
-      video.currentTime = service.videoStart;
-      video.play().catch(() => {});
+      video.currentTime = 0;
+      video.play().catch(() => { });
     };
 
     if (isActive || isCardHovered) {
@@ -138,30 +140,21 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
       }
     } else {
       video.pause();
-      video.currentTime = service.videoStart;
+      video.currentTime = 0;
     }
 
     return () => {
       isMounted = false;
       video.removeEventListener('loadedmetadata', playVideo);
     };
-  }, [isActive, isCardHovered, service.videoStart]);
-
-  const handleTimeUpdate = (e) => {
-    const video = e.target;
-    if (video.readyState >= 1 && !video.seeking) {
-      if (video.currentTime >= service.videoEnd || video.currentTime < service.videoStart - 0.2) {
-        video.currentTime = service.videoStart;
-      }
-    }
-  };
+  }, [isActive, isCardHovered]);
 
   const setWidth = SERVICES.length * itemWidth;
   const initialX = (index - SERVICES.length) * itemWidth;
 
   const x = useTransform(baseX, (latest) => {
     const rawX = initialX + latest;
-    return wrap(-setWidth * 1.5, setWidth * 1.5, rawX);
+    return wrap(-setWidth * 1, setWidth * 1, rawX);
   });
 
   const distance = useTransform(x, (v) => v);
@@ -203,8 +196,8 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
     [-itemWidth, 0, itemWidth],
     [
       '0px 0px 0px rgba(0,0,0,0)',
-      service.isIT 
-        ? '0px 0px 30px rgba(215, 38, 56, 0.2)' 
+      service.isIT
+        ? '0px 0px 30px rgba(215, 38, 56, 0.2)'
         : '0px 20px 40px rgba(0, 0, 0, 0.4)',
       '0px 0px 0px rgba(0,0,0,0)'
     ],
@@ -233,13 +226,13 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
         opacity: 1,         // Force full visibility
         filter: "blur(0px)", // Force zero blur
         borderColor: service.isIT ? '#D72638' : 'rgba(255, 255, 255, 0.4)',
-        boxShadow: service.isIT 
-          ? '0px 0px 40px rgba(215, 38, 56, 0.4)' 
+        boxShadow: service.isIT
+          ? '0px 0px 40px rgba(215, 38, 56, 0.4)'
           : '0px 20px 60px rgba(0, 0, 0, 0.6)',
       }}
-      transition={{ 
-        duration: 0.3, 
-        ease: "easeOut" 
+      transition={{
+        duration: 0.3,
+        ease: "easeOut"
       }}
       tabIndex={0}
       onFocus={() => setIsCardHovered(true)}
@@ -250,7 +243,7 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
           if (isDragging) return;
           if (service.isIT) {
             window.location.hash = '#/it';
-          } else {
+          } else if (service.id) {
             window.location.hash = `/${service.id}`;
           }
         }
@@ -259,7 +252,7 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
         if (isDragging) return;
         if (service.isIT) {
           window.location.hash = '#/it';
-        } else {
+        } else if (service.id) {
           window.location.hash = `/${service.id}`;
         }
       }}
@@ -267,15 +260,13 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
     >
       <video
         ref={videoRef}
+        src={`/videos/card-${service.id}.mp4`}
         muted
-        playsInline
         autoPlay
-        loop={false}
-        onTimeUpdate={handleTimeUpdate}
+        loop
+        playsInline
         className="absolute inset-0 z-0 w-full h-full object-cover opacity-35 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none light-invert"
-      >
-        <source src="/videos/it-video.mp4" type="video/mp4" />
-      </video>
+      />
 
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent pointer-events-none" />
 
@@ -295,7 +286,7 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
           <h3 className="font-heading text-xl sm:text-2xl font-bold text-white tracking-tight">
             {service.title}
           </h3>
-          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider font-mono" style={{ color: service.accent }}>
+          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider font-mono" style={{ color: getReadableAccent(service.accent, isLight) }}>
             {service.tagline}
           </span>
         </div>
@@ -304,7 +295,7 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
         </p>
         <div
           className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-300 transform translate-x-0 group-hover:translate-x-1.5 pt-1 sm:pt-2"
-          style={{ color: service.accent }}
+          style={{ color: getReadableAccent(service.accent, isLight) }}
         >
           {service.isIT ? 'Open IT Cinematic Page' : 'View Details'} <span>→</span>
         </div>
@@ -318,15 +309,21 @@ export default function HomePage({ initialService }) {
   const { isMobile } = useWindowSize();
   const heroVideoRef = useRef(null);
 
-  const [isLight, setIsLight] = useState(false);
+  const [isLight, setIsLight] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('light');
+    }
+    return false;
+  });
 
   useEffect(() => {
-    const checkTheme = () => {
+    const handleThemeChange = () => {
       setIsLight(document.documentElement.classList.contains('light'));
     };
-    checkTheme();
-    const interval = setInterval(checkTheme, 500);
-    return () => clearInterval(interval);
+    handleThemeChange();
+
+    window.addEventListener('themechange', handleThemeChange);
+    return () => window.removeEventListener('themechange', handleThemeChange);
   }, []);
 
   // Explicit load on isLight is removed, resolved declaratively with keys below
@@ -376,7 +373,7 @@ export default function HomePage({ initialService }) {
     if (initialService) {
       const srv = translatedServices.find(s => s.id === initialService);
       if (srv) setActiveModal(srv);
-      
+
       // Auto-scroll down to services when routed from IT Page or direct link
       setTimeout(() => {
         const servicesSection = document.getElementById('services');
@@ -393,8 +390,8 @@ export default function HomePage({ initialService }) {
     const video = heroVideoRef.current;
     if (!video) return;
 
-    const LOOP_START = 5.0;
-    const LOOP_END   = 7.9;
+    const LOOP_START = 8.4;
+    const LOOP_END = 10.0;
     const state = pingPongRef.current;
 
     const tick = (timestamp) => {
@@ -407,57 +404,61 @@ export default function HomePage({ initialService }) {
       const dt = Math.min((timestamp - state.lastTimestamp) / 1000, 0.1);
       state.lastTimestamp = timestamp;
 
-      let t = video.currentTime + state.direction * dt;
-
-      if (state.direction === 1 && t >= LOOP_END) {
-        t = LOOP_END;
-        state.direction = -1;
-      } else if (state.direction === -1 && t <= LOOP_START) {
-        t = LOOP_START;
-        state.direction = 1;
+      if (state.direction === 1) {
+        // Playing forward natively (including intro from 0 to 7.9, and loops from 5.0 to 7.9)
+        if (video.paused) {
+          video.play().catch(() => { });
+        }
+        if (video.currentTime >= LOOP_END) {
+          state.direction = -1;
+          video.pause();
+        }
+      } else {
+        // Going backward via manual seek (7.9 to 5.0)
+        let newTime = video.currentTime - dt;
+        if (newTime <= LOOP_START) {
+          newTime = LOOP_START;
+          state.direction = 1;
+          video.currentTime = newTime;
+          video.play().catch(() => { });
+        } else {
+          video.currentTime = newTime;
+        }
       }
 
-      video.currentTime = t;
-      state.rafId = requestAnimationFrame(tick);
-    };
-
-    const startPingPong = () => {
-      if (state.rafId) cancelAnimationFrame(state.rafId);
-      video.pause();
-      video.currentTime = LOOP_START;
-      state.direction = 1;
-      state.lastTimestamp = null;
       state.rafId = requestAnimationFrame(tick);
     };
 
     const startIntro = () => {
       if (state.rafId) {
         cancelAnimationFrame(state.rafId);
-        state.rafId = null;
       }
-      video.removeEventListener('ended', startPingPong);
 
       video.currentTime = 0;
-      video.play().catch(() => {});
-      video.addEventListener('ended', startPingPong, { once: true });
+      state.direction = 1;
+      state.lastTimestamp = null;
+      video.play().catch(() => { });
+
+      state.rafId = requestAnimationFrame(tick);
     };
 
-    state.tick          = tick;
-    state.startPingPong = startPingPong;
-    state.startIntro    = startIntro;
+    state.startIntro = startIntro;
+
+    const handleLoadedMetadata = () => {
+      startIntro();
+    };
 
     if (video.readyState >= 1) {
-      startIntro();
+      handleLoadedMetadata();
     } else {
-      video.addEventListener('loadedmetadata', startIntro, { once: true });
+      video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
     }
 
     return () => {
       if (state.rafId) cancelAnimationFrame(state.rafId);
-      video.removeEventListener('loadedmetadata', startIntro);
-      video.removeEventListener('ended', startPingPong);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
     };
-  }, [isLight]); 
+  }, [isLight]);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -485,7 +486,7 @@ export default function HomePage({ initialService }) {
 
   useEffect(() => {
     let rafId;
-    const autoscrollSpeed = isMobile ? 0.5 : 1.5; 
+    const autoscrollSpeed = isMobile ? 0.5 : 1.5;
 
     const loop = () => {
       if (!isHovered.current && !isDragging) {
@@ -566,25 +567,23 @@ export default function HomePage({ initialService }) {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen relative overflow-x-hidden font-sans">
+    <div className="bg-white dark:bg-black text-black dark:text-white min-h-screen relative overflow-x-hidden font-sans">
       <Navbar currentPage="home" />
 
       <section className="relative min-h-[95vh] flex items-center pt-24 lg:pt-0 pb-12 overflow-hidden">
         <video
-          key={isLight ? 'light' : 'dark'}
           ref={heroVideoRef}
+          src={isLight ? '/videos/home-hero-light.mp4' : '/videos/home-hero-dark-new.mp4'}
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 z-0 w-full h-full object-cover opacity-100"
-        >
-          <source src={isLight ? '  /videos/home-hero-light.mp4' : '/videos/output-hero.mp4'} type="video/mp4" />
-        </video>
+          className="absolute z-0 w-full h-full object-cover opacity-100"
+        />
 
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black via-transparent to-black pointer-events-none" />
-        <div className="absolute inset-0 z-10 bg-black/40 pointer-events-none" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-[#F5F5F7] via-transparent to-[#F5F5F7] dark:from-black dark:via-transparent dark:to-black pointer-events-none" />
+        <div className="absolute inset-0 z-10 bg-white/10 dark:bg-black/40 pointer-events-none" />
 
-        <div className="absolute inset-0 pointer-events-none z-10">
+        <div className="absolute pointer-events-none z-10">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-granat-red/5 rounded-full blur-[140px] -mr-[150px] -mt-[150px]" />
           <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-granat-dark-red/15 rounded-full blur-[130px] -ml-[120px] -mb-[120px]" />
         </div>
@@ -622,10 +621,10 @@ export default function HomePage({ initialService }) {
               transition={{ duration: 0.6, delay: 0.45 }}
               className="flex flex-wrap gap-4 pt-2"
             >
-              <a href="#services" className="bg-granat-red text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-full shadow-[0_4px_20px_rgba(215,38,56,0.3)] hover:shadow-[0_6px_30px_rgba(215,38,56,0.5)] hover:bg-red-600 transition-all cursor-pointer">
+              <a href="#services" className="bg-granat-red text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-full shadow-[0_4px_20px_rgba(215,38,56,0.3)] hover:shadow-[0_6px_30px_rgba(215,38,56,0.5)] hover:bg-red-600 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red">
                 {t('hero_explore')}
               </a>
-              <a href="#contact" className="border border-white/15 text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-full hover:bg-white/5 transition-all cursor-pointer">
+              <a href="#contact" className="border border-black/15 dark:border-white/15 text-black dark:text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red">
                 {t('nav_start_project')}
               </a>
             </motion.div>
@@ -638,7 +637,7 @@ export default function HomePage({ initialService }) {
             >
               {[
                 { value: '250+', label: t('hero_stat_projects') },
-                { value: '98%',  label: t('hero_stat_satisfaction') },
+                { value: '98%', label: t('hero_stat_satisfaction') },
                 { value: '3.7x', label: t('hero_stat_roi') },
               ].map((stat) => (
                 <div key={stat.label}>
@@ -654,7 +653,7 @@ export default function HomePage({ initialService }) {
       <section id="services" className="py-16 sm:py-28 border-t border-white/5 relative z-10 bg-zinc-950/20">
         <div className="max-w-7xl mx-auto px-6 relative">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
-            <div className="bg-white/5">
+            <div>
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-granat-red">{t('services_capabilities')}</span>
               <h2 className="font-heading text-2xl sm:text-4xl font-bold text-white mt-3 tracking-tight">{t('services_our_services')}</h2>
               <p className="text-white/40 mt-3 text-sm sm:text-base font-light max-w-xl ">
@@ -662,8 +661,8 @@ export default function HomePage({ initialService }) {
               </p>
             </div>
             <div className="flex gap-3 self-start md:self-end">
-              <button onClick={() => scrollTrack('left')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white text-lg transition-all cursor-pointer">←</button>
-              <button onClick={() => scrollTrack('right')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white text-lg transition-all cursor-pointer">→</button>
+              <button onClick={() => scrollTrack('left')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-black dark:text-white text-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red">←</button>
+              <button onClick={() => scrollTrack('right')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-black dark:text-white text-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red">→</button>
             </div>
           </div>
 
@@ -690,6 +689,7 @@ export default function HomePage({ initialService }) {
                   scaleFactor={scaleFactor}
                   isDragging={isDragging}
                   isActive={idx % SERVICES.length === activeIndex}
+                  isLight={isLight}
                 />
               ))}
             </div>
@@ -738,7 +738,7 @@ export default function HomePage({ initialService }) {
                 disabled={formSubmitted}
                 className="w-full bg-granat-red text-white py-4 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-red-600 transition-all cursor-pointer mt-2"
               >
-                {formSubmitted ? 'Sending...' : 'Send Message'}
+                {formSubmitted ? t('contact_sending') : t('contact_send_message')}
               </button>
               {showFormSuccess && (
                 <motion.p
@@ -746,7 +746,7 @@ export default function HomePage({ initialService }) {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-green-400 text-xs font-bold text-center mt-4"
                 >
-                  Thank you! Your inquiry was submitted successfully.
+                  {t('contact_success')}
                 </motion.p>
               )}
             </form>
@@ -783,9 +783,9 @@ export default function HomePage({ initialService }) {
               <button onClick={closeModal} className="absolute top-6 right-6 text-white/40 hover:text-white text-xl p-2 cursor-pointer">✕</button>
               <div className="text-5xl mb-6">{activeModal.icon}</div>
               <h3 className="font-heading text-3xl font-bold text-white mb-2">{activeModal.title}</h3>
-              <p className="text-sm uppercase tracking-widest font-bold mb-4" style={{ color: activeModal.accent }}>{activeModal.tagline}</p>
+              <p className="text-sm uppercase tracking-widest font-bold mb-4" style={{ color: getReadableAccent(activeModal.accent, isLight) }}>{activeModal.tagline}</p>
               <p className="text-white/60 text-base mb-6 leading-relaxed font-light">{activeModal.desc}</p>
-              <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-white mb-3">Key Deliverables & Capabilities</h4>
+              <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-white mb-3">{t('modal_deliverables')}</h4>
               <ul className="space-y-2.5 mb-6">
                 {activeModal.features.map((feat) => (
                   <li key={feat} className="flex items-center gap-3 text-sm text-white/50">
@@ -795,7 +795,7 @@ export default function HomePage({ initialService }) {
                 ))}
               </ul>
               <button onClick={closeModal} className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer">
-                Close Details
+                {t('modal_close')}
               </button>
             </motion.div>
           </motion.div>

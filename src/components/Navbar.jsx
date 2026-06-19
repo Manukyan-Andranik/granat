@@ -44,13 +44,13 @@ export default function Navbar({ currentPage = 'home' }) {
 
   // Sync isLight state with html class list
   useEffect(() => {
-    const checkTheme = () => {
+    const handleThemeChange = () => {
       setIsLight(document.documentElement.classList.contains('light'));
     };
-    checkTheme();
-    
-    const interval = setInterval(checkTheme, 500);
-    return () => clearInterval(interval);
+    handleThemeChange();
+
+    window.addEventListener('themechange', handleThemeChange);
+    return () => window.removeEventListener('themechange', handleThemeChange);
   }, []);
 
   const toggleTheme = () => {
@@ -63,6 +63,7 @@ export default function Navbar({ currentPage = 'home' }) {
       document.documentElement.classList.remove('light');
       localStorage.setItem('granat_theme', 'dark');
     }
+    window.dispatchEvent(new Event('themechange'));
   };
 
   // Handle desktop language dropdown closing on click outside, Escape key, or focus loss
@@ -135,11 +136,10 @@ export default function Navbar({ currentPage = 'home' }) {
             y: scrolled ? 4 : 0,
           }}
           transition={{ type: 'spring', stiffness: 200, damping: 30 }}
-          className={`mx-auto pointer-events-auto transition-all duration-700 ${
-            scrolled
-              ? 'glass-card rounded-full py-2.5 px-6 sm:px-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)]'
-              : 'bg-transparent py-4 px-0'
-          }`}
+          className={`mx-auto pointer-events-auto transition-all duration-700 ${scrolled
+            ? 'glass-card rounded-full py-2.5 px-6 sm:px-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)]'
+            : 'bg-transparent py-4 px-0'
+            }`}
         >
           <div className="flex items-center justify-between gap-4 sm:gap-6">
             {/* Logo */}
@@ -172,9 +172,9 @@ export default function Navbar({ currentPage = 'home' }) {
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-5">
               {NAV_LINKS.map((link) => {
-                const isActive = (currentPage === 'it' && link.href === '#/it') || 
-                                 (currentPage === 'home' && link.href === '#/' && !window.location.hash) ||
-                                 (currentPage === 'home' && window.location.hash === link.href);
+                const isActive = (currentPage === 'it' && link.href === '#/it') ||
+                  (currentPage === 'home' && link.href === '#/' && !window.location.hash) ||
+                  (currentPage === 'home' && window.location.hash === link.href);
 
                 return (
                   <motion.a
@@ -182,14 +182,12 @@ export default function Navbar({ currentPage = 'home' }) {
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link)}
                     whileHover={{ color: '#D72638', y: -1 }}
-                    className={`text-[12px] mr-[5px] font-bold uppercase tracking-[0.2em] transition-colors relative group  ${
-                      isActive ? 'text-granat-red' : 'text-white/40 hover:text-white'
-                    }`}
+                    className={`text-[12px] mr-[5px] font-bold uppercase tracking-[0.2em] transition-colors relative group  ${isActive ? 'text-granat-red' : 'text-white/40 hover:text-white'
+                      }`}
                   >
                     {t(link.labelKey)}
-                    <span className={`absolute -bottom-1 left-0 h-[2px] bg-granat-red transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`} />
+                    <span className={`absolute -bottom-1 left-0 h-[2px] bg-granat-red transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                      }`} />
                   </motion.a>
                 );
               })}
@@ -206,7 +204,7 @@ export default function Navbar({ currentPage = 'home' }) {
                     aria-haspopup="listbox"
                     aria-expanded={desktopLangOpen}
                     aria-label="Select Language"
-                    className="flex items-center gap-1 w-[60px] h-[40px] overflow-hidden cursor-pointer transition-all border border-transparent px-1.5 hover:opacity-80"
+                    className="flex items-center gap-1 w-[60px] h-[40px] overflow-hidden cursor-pointer transition-all border border-transparent px-1.5 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red rounded-lg"
                   >
                     <img
                       src={`/flags/${locale}.svg`}
@@ -214,7 +212,7 @@ export default function Navbar({ currentPage = 'home' }) {
                       className="w-[30px] h-[20px] object-cover rounded-sm shadow-sm"
                     />
                   </button>
-                  
+
                   {/* Dropdown Menu */}
                   <AnimatePresence>
                     {desktopLangOpen && (
@@ -233,11 +231,10 @@ export default function Navbar({ currentPage = 'home' }) {
                                 setLocale(l);
                                 setDesktopLangOpen(false);
                               }}
-                              className={`flex items-center gap-2.5 w-full text-left px-2 py-1.5 rounded cursor-pointer transition-all ${
-                                locale === l
-                                  ? 'bg-granat-red/20 text-white font-bold'
-                                  : 'hover:bg-white/5 text-white/60 hover:text-white'
-                              }`}
+                              className={`flex items-center gap-2.5 w-full text-left px-2 py-1.5 rounded cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red ${locale === l
+                                ? 'bg-granat-red/20 text-white font-bold'
+                                : 'hover:bg-white/5 text-white/60 hover:text-white'
+                                }`}
                             >
                               <img
                                 src={`/flags/${l}.svg`}
@@ -258,7 +255,7 @@ export default function Navbar({ currentPage = 'home' }) {
                 {/* Theme Switch */}
                 <button
                   onClick={toggleTheme}
-                  className="w-10 h-10 text-2xl rounded-full flex items-center justify-center text-white hover:bg-white/10 cursor-pointer transition-all"
+                  className="w-10 h-10 text-2xl rounded-full flex items-center justify-center text-white hover:bg-white/10 cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red"
                   aria-label="Toggle theme"
                 >
                   {isLight ? '🌙' : '☀️'}
@@ -285,7 +282,7 @@ export default function Navbar({ currentPage = 'home' }) {
                 }}
                 whileHover={{ scale: 1.05, backgroundColor: '#D72638' }}
                 whileTap={{ scale: 0.95 }}
-                className="hidden sm:block bg-white/10 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-5 py-2.5 rounded-full border border-white/10 hover:border-transparent transition-all cursor-pointer"
+                className="hidden sm:block bg-white/10 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-5 py-2.5 rounded-full border border-white/10 hover:border-transparent transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red"
               >
                 {t('nav_start_project')}
               </motion.a>
@@ -293,20 +290,20 @@ export default function Navbar({ currentPage = 'home' }) {
               {/* Mobile Hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden flex flex-col gap-1.5 p-2 cursor-pointer"
+                className="lg:hidden flex flex-col gap-1.5 p-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red rounded"
                 aria-label="Toggle menu"
               >
                 <motion.span
                   animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-                  className="block w-5 h-[2px] bg-white"
+                  className="mobile-hamburger-bar block w-5 h-[2px] bg-black dark:bg-white"
                 />
                 <motion.span
                   animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
-                  className="block w-5 h-[2px] bg-white"
+                  className="mobile-hamburger-bar block w-5 h-[2px] bg-black dark:bg-white"
                 />
                 <motion.span
                   animate={mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-                  className="block w-5 h-[2px] bg-white"
+                  className="mobile-hamburger-bar block w-5 h-[2px] bg-black dark:bg-white"
                 />
               </button>
             </div>
@@ -370,11 +367,10 @@ export default function Navbar({ currentPage = 'home' }) {
                   <button
                     key={l}
                     onClick={() => setLocale(l)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all cursor-pointer ${
-                      locale === l
-                        ? 'border-granat-red bg-granat-red/10 text-white font-bold'
-                        : 'border-white/5 bg-white/5 text-white/60'
-                    }`}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all cursor-pointer ${locale === l
+                      ? 'border-granat-red bg-granat-red/10 text-white font-bold'
+                      : 'border-white/5 bg-white/5 text-white/60'
+                      }`}
                   >
                     <img
                       src={`/flags/${l}.svg`}

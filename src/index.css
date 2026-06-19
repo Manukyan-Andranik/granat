@@ -391,6 +391,60 @@ html.light .footer-logo {
   filter: brightness(0) !important;
 }
 
+/* Base bg-black element overrides */
+html.light .bg-black {
+  background-color: #F5F5F7 !important;
+}
+
+/* Light mode overrides for high-contrast card descriptions */
+html.light .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Dynamic theme-aware gradients overlays */
+html.light .hero-gradient-overlay {
+  background-image: linear-gradient(to bottom, #F5F5F7, transparent, #F5F5F7) !important;
+}
+
+html.light .service-card-overlay {
+  background-image: linear-gradient(to top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4), transparent) !important;
+}
+
+/* Light mode overrides for hamburger bars */
+html.light .mobile-hamburger-bar {
+  background-color: #1D1D1F !important;
+}
+
+/* Light mode overrides for copyright text */
+html.light .text-white\/15 {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Light mode overrides for card opacities */
+html.light .bg-white\/3 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+html.light .hover\:bg-white\/8:hover {
+  background-color: rgba(0, 0, 0, 0.07) !important;
+}
+html.light .bg-white\/\[0\.01\] {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+html.light .hover\:bg-white\/5:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+html.light .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Light mode overrides for terminal text */
+html.light .text-green-400 {
+  color: #16a34a !important;
+}
+html.light .text-cyan-300 {
+  color: #0891b2 !important;
+}
+
 .animate-theme-img {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }

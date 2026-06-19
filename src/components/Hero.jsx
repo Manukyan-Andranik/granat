@@ -95,25 +95,25 @@ export default function Hero() {
           {/* Terminal */}
           <motion.div
             variants={itemVariants}
-            className="mb-5 overflow-hidden rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl"
+            className="mb-5 overflow-hidden rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/40 backdrop-blur-xl animate-theme-img"
           >
-            <div className="flex items-center gap-1.5 border-b border-white/5 px-4 py-2 bg-zinc-950/40">
+            <div className="flex items-center gap-1.5 border-b border-black/5 dark:border-white/5 px-4 py-2 bg-black/10 dark:bg-zinc-950/40">
               <div className="w-2 h-2 rounded-full bg-red-500" />
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="ml-2.5 text-[9px] uppercase tracking-[0.2em] font-bold text-white/30 font-mono">
+              <span className="ml-2.5 text-[9px] uppercase tracking-[0.2em] font-bold text-black/40 dark:text-white/30 font-mono">
                 {t('it_hero_terminal_title')}
               </span>
             </div>
 
             <div className="p-3.5 font-mono text-[10px] sm:text-xs leading-6 space-y-0.5 select-none">
-              <div className="text-green-400">
+              <div className="text-green-600 dark:text-green-400">
                 &gt; {t('it_hero_terminal_init')}
               </div>
-              <div className="text-cyan-300">
+              <div className="text-cyan-600 dark:text-cyan-300">
                 &gt; {t('it_hero_terminal_connect')}
               </div>
-              <div className="text-white/60">
+              <div className="text-black/60 dark:text-white/60">
                 &gt; {t('it_hero_terminal_deploy')}
               </div>
               <div className="text-granat-red animate-pulse">
@@ -130,7 +130,7 @@ export default function Hero() {
             {TECH_STACK.map((item) => (
               <div
                 key={item}
-                className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 text-[9px] uppercase tracking-wider font-bold text-white/60 backdrop-blur-lg"
+                className="rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/[0.02] px-3 py-1.5 text-[9px] uppercase tracking-wider font-bold text-black/60 dark:text-white/60 backdrop-blur-lg"
               >
                 {item}
               </div>
@@ -144,14 +144,14 @@ export default function Hero() {
           >
             <button
               onClick={() => handleScrollToSection(1)}
-              className="bg-granat-red text-white px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(215,38,56,0.3)] hover:bg-red-600 transition-colors cursor-pointer"
+              className="bg-granat-red text-white px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(215,38,56,0.3)] hover:bg-red-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red"
             >
               {t('it_hero_explore')}
             </button>
 
             <button
               onClick={() => handleScrollToSection(4)}
-              className="border border-white/10 bg-white/5 backdrop-blur-xl text-white px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white/10 transition-colors cursor-pointer"
+              className="border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl text-black dark:text-white px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red"
             >
               {t('it_hero_start')}
             </button>
@@ -181,11 +181,11 @@ export default function Hero() {
               label: t('it_hero_stat_reliability'),
             },
           ].map((item) => (
-            <div key={item.label} className="bg-white/[0.01] border border-white/5 p-2.5 rounded-xl">
-              <div className="text-lg sm:text-xl font-heading font-bold text-white">
+            <div key={item.label} className="bg-black/5 dark:bg-white/[0.01] border border-black/10 dark:border-white/5 p-2.5 rounded-xl">
+              <div className="text-lg sm:text-xl font-heading font-bold text-black dark:text-white">
                 {item.value}
               </div>
-              <div className="mt-0.5 text-[8px] sm:text-[9px] uppercase tracking-wider font-bold text-white/30 leading-snug">
+              <div className="mt-0.5 text-[8px] sm:text-[9px] uppercase tracking-wider font-bold text-black/40 dark:text-white/30 leading-snug">
                 {item.label}
               </div>
             </div>

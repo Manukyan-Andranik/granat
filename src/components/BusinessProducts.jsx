@@ -71,7 +71,7 @@ export default function BusinessProducts() {
               key={prod.name}
               variants={itemVariants}
               whileHover={{ x: 6 }}
-              className="bg-white/3 hover:bg-white/8 p-[18px] px-5 rounded-[16px] border border-transparent hover:border-white/8 transition-all duration-300 cursor-default flex flex-col justify-center"
+              className="bg-black/5 dark:bg-white/3 hover:bg-black/10 dark:hover:bg-white/8 p-[18px] px-5 rounded-[16px] border border-transparent hover:border-black/10 dark:hover:border-white/8 transition-all duration-300 cursor-default flex flex-col justify-center"
             >
               <h4 className="m-0 text-lg font-semibold flex items-center gap-2.5 text-white mb-2">
                 {t(`it_product_${i + 1}_title`)}

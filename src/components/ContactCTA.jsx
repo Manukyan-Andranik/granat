@@ -19,6 +19,10 @@ export default function ContactCTA() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const phoneRegex = /^[0-9\s\-+\(\)]{5,20}$/;
+    if (formState.phone && !phoneRegex.test(formState.phone)) {
+      return;
+    }
     setSubmitted(true);
     setTimeout(() => {
       setFormState({ name: '', email: '', phone: '', message: '' });
@@ -74,6 +78,8 @@ export default function ContactCTA() {
             onChange={handleChange}
             placeholder={t('contact_placeholder_phone')}
             aria-label={t('contact_placeholder_phone')}
+            pattern="[0-9\s\-\+\(\)]{5,20}"
+            title={t('contact_placeholder_phone')}
             className="w-full p-4 rounded-xl border border-white/8 bg-black/40 text-white font-sans text-base placeholder:text-white/30 focus:outline-none focus:border-granat-red focus:bg-black/60 focus:ring-3 focus:ring-granat-red/20 transition-all duration-300"
           />
 

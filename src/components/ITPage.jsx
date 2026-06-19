@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Navbar from './Navbar';
 import Hero from './Hero';
 import ServiceCards from './ServiceCards';
-import BusinessProducts from './BusinessProducts';
 import ProcessTimeline from './ProcessTimeline';
 import ContactCTA from './ContactCTA';
 import { ProjectsSection } from './ProjectsSection';
@@ -15,17 +14,34 @@ export default function ITPage() {
   const processCardRef = useRef(null);
   const hudRef = useRef(null);
   const scrollEngineRef = useRef({ targetTime: 0, currentTime: 0 });
+  const [isLight, setIsLight] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('light');
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setIsLight(document.documentElement.classList.contains('light'));
+    };
+    handleThemeChange();
+    
+    window.addEventListener('themechange', handleThemeChange);
+    return () => window.removeEventListener('themechange', handleThemeChange);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
+      video.load();
       const resetVideo = () => {
         video.currentTime = 0;
       };
       video.addEventListener('loadedmetadata', resetVideo);
       return () => video.removeEventListener('loadedmetadata', resetVideo);
     }
-  }, []);
+  }, [isLight]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -94,16 +110,27 @@ export default function ITPage() {
       <Navbar currentPage="it" />
 
       {/* Background Video */}
-      <div className="it-page-video-bg fixed inset-0 z-0 bg-black pointer-events-none">
+      <div className="it-page-video-bg fixed inset-0 z-0 bg-black pointer-events-none hidden md:block">
         <video
           ref={videoRef}
+          src={isLight ? '/videos/it-video-light.mp4' : '/videos/it-video-dark.mp4'}
           className="w-full h-full object-cover opacity-60 light-invert"
           muted
           playsInline
           preload="auto"
-        >
-          <source src="/videos/it-video.mp4" type="video/mp4" />
-        </video>
+        />
+      </div>
+
+      {/* Mobile Robot Video */}
+      <div className="fixed bottom-0 right-0 z-30 w-[80%] max-w-[400px] pointer-events-none md:hidden opacity-90">
+        <video
+          className="w-full h-auto"
+          src="/videos/robot-sitting.mp4"
+          muted
+          playsInline
+          autoPlay
+          loop
+        />
       </div>
 
       {/* Debug HUD */}

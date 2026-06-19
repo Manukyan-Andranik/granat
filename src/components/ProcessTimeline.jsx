@@ -30,7 +30,7 @@ export default function ProcessTimeline({ processCardRef }) {
           {STEPS.map((step) => (
             <div
               key={step.num}
-              className="bg-white/3 hover:bg-white/8 p-4 rounded-2xl flex items-center gap-3.5 font-semibold text-base border border-white/5 transition-all duration-300 cursor-default"
+              className="bg-black/5 dark:bg-white/3 hover:bg-black/10 dark:hover:bg-white/8 p-4 rounded-2xl flex items-center gap-3.5 font-semibold text-base border border-black/10 dark:border-white/5 transition-all duration-300 cursor-default"
             >
               <span className="bg-gradient-to-br from-granat-red to-granat-dark-red w-8 h-8 flex items-center justify-center rounded-full font-bold text-[13px] shadow-[0_2px_8px_rgba(0,0,0,0.5)] text-white-keep shrink-0">
                 {step.num}

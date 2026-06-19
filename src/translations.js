@@ -83,7 +83,7 @@ export const translations = {
     it_service_5_desc: "Digital transformation, API integrations, and system architecture.",
 
     // ITPage Projects Section
-    it_projects_title: "Our Systems & Products",
+    it_projects_title: "Our Projects",
     it_projects_desc: "We design and develop scalable digital ecosystems, SaaS platforms, and automation-driven infrastructure.",
     it_projects_cta: "Need a custom enterprise ecosystem?",
     it_projects_start_build: "Start custom build",
