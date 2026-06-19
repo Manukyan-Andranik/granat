@@ -94,7 +94,7 @@ export function ProjectsSection() {
 
   return (
     // <section className="scroll-section max-w-3xl !py-8 !px-8 md:!px-10 flex flex-col justify-between">
-    <section className="scroll-section max-w-4xl !py-8 !px-8 md:!px-10 relative flex items-center justify-center p-4 lg:p-8 animate-theme-img">
+    <section className="scroll-section max-w-4xl !py-8 !px-8 md:!px-10 relative flex items-center justify-center p-4 lg:p-8">
       <div
         onMouseEnter={() => { isPaused.current = true; }}
         onMouseLeave={() => { isPaused.current = false; }}
