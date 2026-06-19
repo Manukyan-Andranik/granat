@@ -256,7 +256,7 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
           window.location.hash = `/${service.id}`;
         }
       }}
-      className="service-video-card h-[380px] sm:h-[460px] cursor-pointer relative shrink-0 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden bg-zinc-950/70 border flex flex-col justify-between group p-8 sm:p-10"
+      className="service-video-card h-[380px] sm:h-[510px] cursor-pointer relative shrink-0 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden bg-zinc-950/70 border flex flex-col justify-between group p-8 sm:p-10"
     >
       <video
         ref={videoRef}
@@ -301,6 +301,93 @@ function ServiceVideoCard({ service, index, baseX, itemWidth, cardWidth, scaleFa
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function MobileServiceReelCard({ service, isLight, setActiveModal, t }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.play().catch(() => {});
+    }
+  }, []);
+
+  return (
+    <div
+      onClick={() => {
+        if (service.isIT) {
+          window.location.hash = '#/it';
+        } else {
+          setActiveModal(service);
+        }
+      }}
+      className="w-full max-w-[390px] mx-auto h-[520px] rounded-[2rem] overflow-hidden border bg-zinc-950/75 relative cursor-pointer group shadow-xl flex flex-col justify-between p-8 sm:p-10 select-none transition-transform duration-300"
+      style={{
+        boxShadow: `0 10px 30px rgba(0, 0, 0, 0.4), 0 0 30px ${service.accent}15`,
+        borderColor: `${service.accent}30`
+      }}
+    >
+      <video
+        ref={videoRef}
+        src={`/videos/card-${service.id}.mp4`}
+        muted
+        autoPlay
+        loop
+        playsInline
+        className="absolute inset-0 z-0 w-full h-full object-cover opacity-50 transition-opacity duration-500 pointer-events-none light-invert"
+      />
+
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+
+      {/* Top Bar: Icon and Live Tag */}
+      <div className="relative z-20 flex justify-between items-start">
+        <div className="text-3xl filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+          {service.icon}
+        </div>
+        {service.isIT && (
+          <span className="bg-granat-red text-white text-[8px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full animate-pulse shadow-[0_2px_10px_rgba(215,38,56,0.4)]">
+            Live Experience
+          </span>
+        )}
+      </div>
+
+      {/* Bottom Content Area */}
+      <div className="relative z-20 space-y-4 mt-auto">
+        <div>
+          <span className="text-[10px] font-bold uppercase tracking-wider font-mono text-white/50" style={{ color: getReadableAccent(service.accent, isLight) }}>
+            {service.tagline}
+          </span>
+          <h3 className="font-heading text-3xl font-bold text-white tracking-tight mt-0.5">
+            {service.title}
+          </h3>
+        </div>
+
+        <p className="text-white/70 text-xs sm:text-sm leading-relaxed font-light line-clamp-3">
+          {service.desc}
+        </p>
+
+        {/* Deliverables List */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {service.features.slice(0, 3).map((feat) => (
+            <span
+              key={feat}
+              className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60 font-bold"
+            >
+              {feat}
+            </span>
+          ))}
+        </div>
+
+        <div
+          className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider pt-2"
+          style={{ color: getReadableAccent(service.accent, isLight) }}
+        >
+          {service.isIT ? 'Open IT Cinematic Page' : 'View Details'} <span>→</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -359,6 +446,27 @@ export default function HomePage({ initialService }) {
 
   const isHovered = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
+
+  const mobileScrollRef = useRef(null);
+  const isMobilePaused = useRef(false);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const interval = setInterval(() => {
+      const container = mobileScrollRef.current;
+      if (container && !isMobilePaused.current) {
+        const cardHeight = container.clientHeight;
+        const currentScroll = container.scrollTop;
+        const nextIndex = Math.round(currentScroll / cardHeight) + 1;
+        const targetIndex = nextIndex % SERVICES.length;
+        container.scrollTo({
+          top: targetIndex * cardHeight,
+          behavior: 'smooth',
+        });
+      }
+    }, 4500); // Auto scroll every 4.5 seconds
+    return () => clearInterval(interval);
+  }, [isMobile]);
 
   useEffect(() => {
     if (activeModal) {
@@ -471,7 +579,7 @@ export default function HomePage({ initialService }) {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  const cardWidth = isMobile ? 280 : 360;
+  const cardWidth = isMobile ? 320 : 400;
   const gap = isMobile ? 40 : 80;
   const itemWidth = cardWidth + gap;
   const scaleFactor = isMobile ? 1.25 : 1.45;
@@ -570,7 +678,7 @@ export default function HomePage({ initialService }) {
     <div className="bg-white dark:bg-black text-black dark:text-white min-h-screen relative overflow-x-hidden font-sans">
       <Navbar currentPage="home" />
 
-      <section className="relative min-h-[95vh] flex items-center pt-24 lg:pt-0 pb-12 overflow-hidden">
+      {/* <section className="relative min-h-[95vh] flex items-center pt-24 lg:pt-0 pb-12 overflow-hidden">
         <video
           ref={heroVideoRef}
           src={isLight ? '/videos/home-hero-light.mp4' : '/videos/home-hero-dark-new.mp4'}
@@ -590,12 +698,12 @@ export default function HomePage({ initialService }) {
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full relative z-20">
           <div className="lg:col-span-12 space-y-6">
-            {/* <motion.div initial={{ opacity: 1, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <motion.div initial={{ opacity: 1, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-granat-red bg-granat-red/8 border border-granat-red/20 px-4 py-2 rounded-full">
                 <span className="w-1.5 h-1.5 bg-granat-red rounded-full animate-pulse" />
                 {t('hero_digital_agency')}
               </span>
-            </motion.div> */}
+            </motion.div>
 
             <motion.h1
               initial={{ opacity: 1, y: 20 }}
@@ -648,52 +756,83 @@ export default function HomePage({ initialService }) {
             </motion.div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section id="services" className="py-16 sm:py-28 border-t border-white/5 relative z-10 bg-zinc-950/20">
         <div className="max-w-7xl mx-auto px-6 relative">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-granat-red">{t('services_capabilities')}</span>
+              {/* <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-granat-red">{t('services_capabilities')}</span> */}
               <h2 className="font-heading text-2xl sm:text-4xl font-bold text-white mt-3 tracking-tight">{t('services_our_services')}</h2>
-              <p className="text-white/40 mt-3 text-sm sm:text-base font-light max-w-xl ">
+              {/* <p className="text-white/40 mt-3 text-sm sm:text-base font-light max-w-xl ">
                 {t('services_desc')}
-              </p>
+              </p> */}
             </div>
-            <div className="flex gap-3 self-start md:self-end">
+            <div className="hidden md:flex gap-3 self-start md:self-end">
               <button onClick={() => scrollTrack('left')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-black dark:text-white text-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red">←</button>
               <button onClick={() => scrollTrack('right')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-black dark:text-white text-lg transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-granat-red">→</button>
             </div>
           </div>
 
-          <motion.div
-            ref={carouselRef}
-            onMouseEnter={() => { isHovered.current = true; }}
-            onMouseLeave={() => { isHovered.current = false; }}
-            onPanStart={handleDragStart}
-            onPan={(event, info) => {
-              x.set(x.get() + info.delta.x);
-            }}
-            onPanEnd={handleDragEnd}
-            className="relative w-full h-[520px] sm:h-[700px] flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none"
-          >
-            <div className="flex items-center justify-center relative w-full h-full pointer-events-none">
-              {translatedInfiniteServices.map((srv, idx) => (
-                <ServiceVideoCard
-                  key={`${srv.id}-${idx}`}
-                  service={srv}
-                  index={idx}
-                  baseX={springX}
-                  itemWidth={itemWidth}
-                  cardWidth={cardWidth}
-                  scaleFactor={scaleFactor}
-                  isDragging={isDragging}
-                  isActive={idx % SERVICES.length === activeIndex}
-                  isLight={isLight}
-                />
+          {!isMobile ? (
+            <motion.div
+              ref={carouselRef}
+              onMouseEnter={() => { isHovered.current = true; }}
+              onMouseLeave={() => { isHovered.current = false; }}
+              onPanStart={handleDragStart}
+              onPan={(event, info) => {
+                x.set(x.get() + info.delta.x);
+              }}
+              onPanEnd={handleDragEnd}
+              className="relative w-full h-[520px] sm:h-[760px] flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none"
+            >
+              <div className="flex items-center justify-center relative w-full h-full pointer-events-none">
+                {translatedInfiniteServices.map((srv, idx) => (
+                  <ServiceVideoCard
+                    key={`${srv.id}-${idx}`}
+                    service={srv}
+                    index={idx}
+                    baseX={springX}
+                    itemWidth={itemWidth}
+                    cardWidth={cardWidth}
+                    scaleFactor={scaleFactor}
+                    isDragging={isDragging}
+                    isActive={idx % SERVICES.length === activeIndex}
+                    isLight={isLight}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            /* Mobile "Reel List" Layout with Snap Scrolling & Full Card Height */
+            <div
+              ref={mobileScrollRef}
+              onTouchStart={() => { isMobilePaused.current = true; }}
+              onTouchEnd={() => {
+                setTimeout(() => {
+                  isMobilePaused.current = false;
+                }, 3000);
+              }}
+              onMouseDown={() => { isMobilePaused.current = true; }}
+              onMouseUp={() => {
+                setTimeout(() => {
+                  isMobilePaused.current = false;
+                }, 3000);
+              }}
+              className="flex flex-col w-full h-[80vh] overflow-y-auto snap-y snap-mandatory no-scrollbar scroll-smooth"
+            >
+              {translatedServices.map((srv) => (
+                <div key={srv.id} className="snap-start snap-always shrink-0 w-full h-full flex items-center justify-center p-3">
+                  <MobileServiceReelCard
+                    service={srv}
+                    isLight={isLight}
+                    setActiveModal={setActiveModal}
+                    t={t}
+                  />
+                </div>
               ))}
             </div>
-          </motion.div>
+          )}
         </div>
       </section>
 

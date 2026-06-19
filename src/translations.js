@@ -8,7 +8,7 @@ export const translations = {
     nav_dooh: "DOOH",
     nav_branding: "Branding",
     nav_start_project: "Start Project",
-    
+
     // HomePage Hero
     hero_digital_agency: "Digital Agency Engine",
     hero_we_build: "We Build",
@@ -164,7 +164,7 @@ export const translations = {
     nav_dooh: "DOOH",
     nav_branding: "Брендинг",
     nav_start_project: "Начать проект",
-    
+
     // HomePage Hero
     hero_digital_agency: "Инструменты диджитал-агентства",
     hero_we_build: "Мы создаем",
@@ -320,7 +320,7 @@ export const translations = {
     nav_dooh: "DOOH",
     nav_branding: "Բրենդինգ",
     nav_start_project: "Սկսել նախագիծը",
-    
+
     // HomePage Hero
     hero_digital_agency: "Թվային գործակալության շարժիչ",
     hero_we_build: "Մենք ստեղծում ենք",
