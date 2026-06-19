@@ -760,7 +760,7 @@ export default function HomePage({ initialService }) {
 
       <section id="services" className="py-16 sm:py-28 border-t border-white/5 relative z-10 bg-zinc-950/20">
         <div className="max-w-7xl mx-auto px-6 relative">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               {/* <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-granat-red">{t('services_capabilities')}</span> */}
               <h2 className="font-heading text-2xl sm:text-4xl font-bold text-white mt-3 tracking-tight">{t('services_our_services')}</h2>
