@@ -822,7 +822,7 @@ export default function HomePage({ initialService }) {
               className="flex flex-col w-full h-[80vh] overflow-y-auto snap-y snap-mandatory no-scrollbar scroll-smooth"
             >
               {translatedServices.map((srv) => (
-                <div key={srv.id} className="snap-start snap-always shrink-0 w-full h-full flex items-center justify-center p-3">
+                <div key={srv.id} className="snap-start snap-always shrink-0 w-full h-full flex items-center justify-center pt-2 pb-14 px-3">
                   <MobileServiceReelCard
                     service={srv}
                     isLight={isLight}
